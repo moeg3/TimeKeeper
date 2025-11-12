@@ -11,18 +11,20 @@ function TimeKeeper() {
 
   // タイマー制御
   useEffect(() => {
-    if (isRunning) {
-      startTimeRef.current = Date.now() - (duration - remaining) * 1000;
-      timerRef.current = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
-        const newRemaining = duration - elapsed;
-        setRemaining(newRemaining > 0 ? newRemaining : 0);
-      }, 1000);
-    } else {
-      clearInterval(timerRef.current);
-    }
-    return () => clearInterval(timerRef.current);
-  }, [isRunning, duration]);
+  if (isRunning) {
+    startTimeRef.current = Date.now() - (duration - remaining) * 1000;
+    timerRef.current = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      const newRemaining = duration - elapsed;
+      setRemaining(newRemaining > 0 ? newRemaining : 0);
+    }, 1000);
+  } else {
+    clearInterval(timerRef.current);
+  }
+  return () => clearInterval(timerRef.current);
+  // ✅ remaining を依存に追加
+  }, [isRunning, duration, remaining]);
+
 
   const minutes = Math.floor(remaining / 60);
   const seconds = remaining % 60;
